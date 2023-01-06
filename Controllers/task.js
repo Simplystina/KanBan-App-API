@@ -155,13 +155,10 @@ exports.updateSubTask = async(req,res)=>{
         const {task, taskId} = req.body
         
         const data = await TaskModel.findById(taskId)
-        console.log(data,"subtaskkkkkkkk", task)
-        data.updateOne(
-            { _id: taskId },
-            { $push: { subtask: task} }
-         )
         
-        return res.status(201).json({message:`You have successfully updated subtask field`})
+        data.subtask.push(task)
+        data.save()
+        return res.status(201).json({message:`You have successfully added this subtask`})
 
     } catch (error) {
         console.log(error)

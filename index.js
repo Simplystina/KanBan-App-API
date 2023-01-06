@@ -1,5 +1,6 @@
 const express = require("express")
 const bodyParser = require("body-parser")
+const cors = require('cors')
 const passport = require("passport")
 const {connect } = require("./database/index")
 
@@ -17,11 +18,19 @@ connect()
 
 
 
-
 const app = express()
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.json())
 
+
+app.options('*', cors()); // preflight OPTIONS; put before other routes
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT,PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 app.use('/',authRouter)
 app.use('/board', passport.authenticate('jwt', {session:false}),boardRouter)
