@@ -30,6 +30,7 @@ passport.use(
         async(req, email, pasword, done)=>{
             try{
                 const user = await UserModel.create(req.body)
+                console.log(user,"userr")
                 return done(null, user)
             }catch(error){
                 return done(error, {message:"Email already exist"})
@@ -47,13 +48,14 @@ passport.use(
         },
         async(email, password, done)=>{
             try {
-                const user = await UserModel.findOne({email})
-                
+                console.log(typeof email, email)
+                const user = await UserModel.findOne({"email":email})   
+                console.log("user", user, email)
                 if(!user){
                     return done(null, false, {message: 'User not found'})
                 }
-
                 const validate = await user.isValidPassword(password)
+            
                 console.log(validate, "validate")
                 if(!validate){
                     return done(null, false, {message: 'Wrong password entered'})
@@ -61,6 +63,7 @@ passport.use(
 
                 return done(null, user, {message: 'logged in Successfully'})
             } catch (error) {
+                console.log(error, "error")
                 return done(error)
             }
         }

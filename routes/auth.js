@@ -60,7 +60,7 @@ authRouter.post(
                         // You then sign the token with a secret or key (JWT_SECRET), and send back the token to the user.
                         // DO NOT STORE PASSWORDS IN THE JWT!
 
-                        const token = jwt.sign({user:body}, process.env.JWT_SECRET, { expiresIn: '1h' })
+                        const token = jwt.sign({user:body}, process.env.JWT_SECRET, { expiresIn: '5h' })
 
                         return res.status(200).json({token, user})
                     }

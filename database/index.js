@@ -12,7 +12,7 @@ const connect =() =>{
 
     mongoose.connection.on("error",(err)=>{
         console.log("An error occurred while connecting to /mongoDB")
-        console.log(err)
+      
     })
 }
 module.exports = {connect}
