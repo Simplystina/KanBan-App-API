@@ -32,7 +32,7 @@ UserModel.pre(
 UserModel.methods.isValidPassword = async function(password){
     const user = this
     const compare = await bcrypt.compare(password, user.password)
-    console.log(compare,"compare")
+    
     return compare
 }
 

@@ -9,5 +9,5 @@ boardRouter.get('/all',BoardController.getAllBoards)
 boardRouter.get('/:id',BoardController.getABoard)
 boardRouter.delete('/:id',BoardController.deleteBoard)
 boardRouter.put('/:id', BoardController.updateBoard)
-
+boardRouter.post("/add-collaborator", BoardController.AddCollaborator)
 module.exports = boardRouter

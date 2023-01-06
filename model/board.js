@@ -8,7 +8,8 @@ const BoardModel = new Schema(
     {
         id: ObjectId,
         name : {type: String, unique: true, required: true},
-        userId: { type: ObjectId},
+        collaborators: [{type: String}],
+        userId: [{ type: ObjectId}],
 
     },
     {

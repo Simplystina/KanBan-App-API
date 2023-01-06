@@ -1,4 +1,5 @@
 const BoardModel = require("../model/board")
+const UserModel = require("../model/user")
 
 exports.createBoard = async(req,res)=>{
     try {
@@ -72,5 +73,33 @@ exports.deleteBoard = async(req,res)=>{
         res.status(200).json({message: "Board Deleted successfully", status: true})
     } catch (error) {
         res.status(500).send(error)
+    }
+}
+
+exports.AddCollaborator = async(req,res)=>{
+    try {
+        const {email, boardId} = req.body
+        console.log(email, boardId, req.user.email, "user details")
+        const data = await UserModel.find({"email":email})
+        
+        if(email === req.user.email){
+            res.status(400).json({message:"You can't add yourself as a collaborator to your own project"})
+        }
+        console.log(data,"dataaaaaaa")
+        if(data.length === 0){
+          return res.status(404).json({message:"The email address supplied isn't registered", status: true})
+        }
+        const board = await BoardModel.findById(boardId)
+        board.updateOne(
+            { _id: boardId },
+            { $push: { collaborators: email } }
+         )
+        
+      
+        return res.status(201).json({message:`You have successfully added ${email} as a collaborator`})
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({message: "The id passed doesn't exist"})
     }
 }
