@@ -15,6 +15,14 @@ taskRouter.patch('/update/:id',TaskController.updateTask)
 taskRouter.get('/done/:id', TaskController.getDonetasks)
 taskRouter.get('/doing/:id', TaskController.getDoingtasks)
 taskRouter.get('/todo/:id', TaskController.getTodotasks)
-taskRouter.post('/add-subtask',TaskController.updateSubTask)
+//taskRouter.post('/add-subtask',TaskController.updateSubTask)
+
+
+//Subtask
+taskRouter.get('/complete-subtask/:id', TaskController.updateSubTaskToCompleted)
+taskRouter.delete('/delete-subtask/:id', TaskController.deleteSubtask)
+taskRouter.post('/add-subtask', TaskController.addSubtask)
+taskRouter.get('/all-subtask/:id', TaskController.getAllSubtasks)
+
 
 module.exports = taskRouter

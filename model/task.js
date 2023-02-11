@@ -9,7 +9,11 @@ const TaskModel = new Schema(
        id: ObjectId,
        title: {type: String, required: true, unique: true} ,
        description: {type: String},
-       subtask : [{type: String}],
+       subtask : [{
+                id: ObjectId,
+                title: {type: String, required: true, unique: true},
+                isCompleted: {type: String, enum: [true,false], default: false}
+            }],
        status: {
         type: String, enum: ['todo',"doing","done"]
        ,required: true},
