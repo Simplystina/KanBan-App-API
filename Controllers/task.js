@@ -1,7 +1,7 @@
 const BoardModel = require("../model/board")
 const TaskModel = require("../model/task")
 const taskRouter = require("../routes/task")
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 exports.createTask = async(req,res)=>{
     try {
@@ -101,7 +101,7 @@ exports.deleteTask = async(req,res)=>{
     try {
         const id = req.params.id
         const data = await TaskModel.findByIdAndDelete(id)
-        res.status(200).json({message: "Board Deleted successfully", status: true})
+        res.status(200).json({message: "Task Deleted successfully", status: true})
     } catch (error) {
         res.status(422).send(error)
     }
@@ -246,3 +246,6 @@ exports.getAllSubtasks = async(req,res)=>{
        return res.status(422).send({message: "The id passed doesn't exist"})
     }
 }
+
+
+//Collaborators

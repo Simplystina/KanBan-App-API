@@ -1,5 +1,6 @@
 const BoardModel = require("../model/board")
 const UserModel = require("../model/user")
+const mongoose = require('mongoose');
 
 exports.createBoard = async(req,res)=>{
     try {
@@ -39,7 +40,7 @@ exports.getABoard = async(req,res)=>{
             data: result
         })
     } catch (error) {
-        res.status(500).send({message: "The id doesn't exist"})
+        res.status(404).send({message: "The id doesn't exist"})
     }
 }
 
@@ -47,12 +48,29 @@ exports.getAllBoards = async(req,res)=>{
     try {
 
         const userId = req.user._id
-        const result = await BoardModel.find({"userId": userId})
+        const email = req.user.email
+        //const result = await BoardModel.find({"userId": userId})
+        const result = await BoardModel.find({$or: [{ collaborators: email},{userId: userId }]})
+        
         res.status(200).json({message:"Successfully retrieved", status: true, data: result})
     } catch (error) {
-        res.status(500).send("Something went wrong, check logs")
+        res.status(404).send("Something went wrong, check logs")
     }
 }
+exports.getCollaboratedBoards = async(req,res)=>{
+    try {
+
+        const userId = req.user._id
+        const email = req.user.email
+        
+        const result = await BoardModel.find({collaborators: email})
+        
+        res.status(200).json({message:"Collaborated Boards Successfully retrieved", status: true, data: result})
+    } catch (error) {
+        res.status(404).send("Something went wrong, check logs")
+    }
+}
+
 
 exports.updateBoard = async(req,res)=>{
     try {
@@ -62,17 +80,28 @@ exports.updateBoard = async(req,res)=>{
         res.status(200).json({message: "Board updated successfully", status: true, data:update})
 
     } catch (error) {
-        res.status(500).send(error)
+        res.status(404).send(error)
     }
 }
 
 exports.deleteBoard = async(req,res)=>{
     try {
         const id = req.params.id
-        const data = await BoardModel.findByIdAndDelete(id)
-        res.status(200).json({message: "Board Deleted successfully", status: true})
+        console.log(id,"idddddddddd")
+        const fetchedData = await BoardModel.findById(id)
+
+        console.log(req.user._id,  fetchedData)
+        if(!fetchedData){
+            return res.status(404).send({message:"ID doesn't exist"})
+        }
+       if(String(req.user._id) == String(fetchedData?.userId[0])){
+            const data = await BoardModel.findByIdAndDelete(id)
+           return res.status(200).json({message: "Board Deleted successfully", status: true})
+       }
+       return res.status(403).json({message: "You can't delete this board because you didn't create it", status: true})
     } catch (error) {
-        res.status(500).send(error)
+        console.log(error)
+       return res.status(404).send({message:"ID doesn't exist"})
     }
 }
 
@@ -100,6 +129,6 @@ exports.AddCollaborator = async(req,res)=>{
 
     } catch (error) {
         console.log(error)
-        res.status(500).send({message: "The id passed doesn't exist"})
+        res.status(404).send({message: "The id passed doesn't exist"})
     }
 }
