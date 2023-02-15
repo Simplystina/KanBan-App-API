@@ -20,7 +20,7 @@ exports.createTask = async(req,res)=>{
             data: task
         })
     } catch (error) {
-        console.log(error.keyPattern.title, error.keyPattern)
+        console.log(error, "errorrrrrrrrrr")
         if(error.keyPattern.title){
             return res.status(404).send({
                 message:"Title already used"
