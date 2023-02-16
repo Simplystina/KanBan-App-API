@@ -4,6 +4,8 @@ const taskRouter = require("../routes/task")
 const mongoose = require('mongoose');
 
 exports.createTask = async(req,res)=>{
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
     try {
         const data = req.body
        
