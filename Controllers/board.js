@@ -24,7 +24,7 @@ exports.createBoard = async(req,res)=>{
         return res.status(404).send({
             message:"Title already used"
         })
-      
+       
     }
 }
 
@@ -38,7 +38,7 @@ exports.getABoard = async(req,res)=>{
             message:"Data fetched successfully",
             status: true,
             data: result
-        })
+        }) 
     } catch (error) {
         res.status(404).send({message: "The id doesn't exist"})
     }

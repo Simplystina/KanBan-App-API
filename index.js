@@ -4,7 +4,7 @@ const cors = require('cors')
 const passport = require("passport")
 const {connect } = require("./database/index")
 
-//import Routerd
+//import Router
 const authRouter = require("./routes/auth")
 const boardRouter = require("./routes/board")
 const taskRouter = require("./routes/task")

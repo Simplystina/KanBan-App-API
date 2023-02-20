@@ -1,6 +1,5 @@
 const BoardModel = require("../model/board")
 const TaskModel = require("../model/task")
-const taskRouter = require("../routes/task")
 const mongoose = require('mongoose');
 
 exports.createTask = async(req,res)=>{
@@ -55,14 +54,81 @@ exports.getAllBoardtasks = async(req,res)=>{
 
     const  {id} = req.params
 
+    try {
+        const result = await TaskModel.find({"boardId":id}).populate("author")
+      
+        const doneStatus = await TaskModel.find({status:"done","boardId":id})
+
+        const doingStatus = await TaskModel.find({status:"doing", "boardId":id})
+
+        const todoStatus = await TaskModel.find({status:"todo", "boardId":id})
+
+        const appBoard = [
+            {
+                columnTitle: "todo",
+                tasks: todoStatus
+            },
+            {
+                columnTitle: "doing",
+                tasks: doingStatus
+            },
+            {
+                columnTitle: "done",
+                tasks: doneStatus
+            }
+        ]
+
+        return res.status(200).json({message:"Successfully retrieved all tasks", status: true, data: appBoard, result, result})
+    } catch (error) {
+        res.status(422).send("Something went wrong, check logs")
+    }
+}
+
+exports.getDonetasks = async(req,res)=>{
+    const  {id} = req.params
+
     const findQuery = {}
-    //findQuery.boardId = boardId
+    findQuery.boardId = id
+    findQuery.status = "done"
     try {
         
         
-        const result = await TaskModel.find({"boardId":id}).populate("author")
+        const result = await TaskModel.find(findQuery)
         
-        res.status(200).json({message:"Successfully retrieved", status: true, data: result})
+        res.status(200).json({message:"Successfully retrieved Done Tasks", status: true, data: result})
+    } catch (error) {
+        res.status(422).send("Something went wrong, check logs")
+    }
+}
+exports.getDoingtasks = async(req,res)=>{
+    const  {id} = req.params
+
+    const findQuery = {}
+    findQuery.boardId = id
+    findQuery.status = "doing"
+    try {
+        
+        
+        const result = await TaskModel.find(findQuery)
+        
+        res.status(200).json({message:"Successfully retrieved Doing Tasks", status: true, data: result})
+    } catch (error) {
+        res.status(422).send("Something went wrong, check logs")
+    }
+}
+
+exports.getTodotasks = async(req,res)=>{
+
+    const  {id} = req.params
+    const findQuery = {}
+    findQuery.boardId = id
+    findQuery.status = "todo"
+
+    try {
+
+        const result = await TaskModel.find(findQuery)
+        res.status(200).json({message:"Successfully retrieved Todo Tasks", status: true, data: result})
+
     } catch (error) {
         res.status(422).send("Something went wrong, check logs")
     }
@@ -109,71 +175,7 @@ exports.deleteTask = async(req,res)=>{
     }
 }
 
-exports.getDonetasks = async(req,res)=>{
-    const  {id} = req.params
 
-    const findQuery = {}
-    findQuery.boardId = id
-    findQuery.status = "done"
-    try {
-        
-        
-        const result = await TaskModel.find(findQuery)
-        
-        res.status(200).json({message:"Successfully retrieved Done Tasks", status: true, data: result})
-    } catch (error) {
-        res.status(422).send("Something went wrong, check logs")
-    }
-}
-exports.getDoingtasks = async(req,res)=>{
-    const  {id} = req.params
-
-    const findQuery = {}
-    findQuery.boardId = id
-    findQuery.status = "doing"
-    try {
-        
-        
-        const result = await TaskModel.find(findQuery)
-        
-        res.status(200).json({message:"Successfully retrieved Doing Tasks", status: true, data: result})
-    } catch (error) {
-        res.status(422).send("Something went wrong, check logs")
-    }
-}
-
-exports.getTodotasks = async(req,res)=>{
-    const  {id} = req.params
-
-    const findQuery = {}
-    findQuery.boardId = id
-    findQuery.status = "todo"
-    try {
-        
-        
-        const result = await TaskModel.find(findQuery)
-        
-        res.status(200).json({message:"Successfully retrieved Todo Tasks", status: true, data: result})
-    } catch (error) {
-        res.status(422).send("Something went wrong, check logs")
-    }
-}
-
-
-exports.getAllSubtasks = async(req,res)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
-}
-exports.getASubtask = async(req,res)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
-}
 
 exports.updateSubTaskToCompleted = async(req,res)=>{
     try {
@@ -238,10 +240,10 @@ exports.getAllSubtasks = async(req,res)=>{
         const {id}  = req.params
 
         const objectId = mongoose.Types.ObjectId(id);
-        console.log(id, objectId,"idddddddddd")
+       
         const data = await TaskModel.find({_id: objectId})
 
-        console.log(id, data,"dataaaaaaaaaaaaaa")
+
         return res.status(200).send({status:true, message:"Subtasks successfully retrieved", subtask:data[0].subtask})
     } catch (error) {
         console.log(error)
@@ -250,4 +252,4 @@ exports.getAllSubtasks = async(req,res)=>{
 }
 
 
-//Collaborators
+

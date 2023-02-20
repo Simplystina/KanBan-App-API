@@ -20,6 +20,7 @@ const TaskModel = new Schema(
        boardId: { type: ObjectId, required: true},
        author: {type: mongoose.Schema.Types.ObjectId, ref:"boards"}
     },
+
     {
         timestamps: true, toJSON: {virtuals: true}
     }
