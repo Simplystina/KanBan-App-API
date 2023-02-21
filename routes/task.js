@@ -19,7 +19,8 @@ taskRouter.get('/todo/:id', TaskController.getTodotasks)
 
 
 //Subtask
-taskRouter.get('/complete-subtask/:id', TaskController.updateSubTaskToCompleted)
+taskRouter.get('/update-subtask-status/:id', TaskController.updateSubTaskStatus)
+taskRouter.put('/update-subtask/:id', TaskController.updateSubtask)
 taskRouter.delete('/delete-subtask/:id', TaskController.deleteSubtask)
 taskRouter.post('/add-subtask', TaskController.addSubtask)
 taskRouter.get('/all-subtask/:id', TaskController.getAllSubtasks)

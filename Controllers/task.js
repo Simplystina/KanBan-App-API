@@ -66,19 +66,22 @@ exports.getAllBoardtasks = async(req,res)=>{
         const appBoard = [
             {
                 columnTitle: "todo",
+                _id:1,
                 tasks: todoStatus
             },
             {
                 columnTitle: "doing",
+                _id:2,
                 tasks: doingStatus
             },
             {
                 columnTitle: "done",
+                _id:3,
                 tasks: doneStatus
             }
         ]
 
-        return res.status(200).json({message:"Successfully retrieved all tasks", status: true, data: appBoard, result, result})
+        return res.status(200).json({message:"Successfully retrieved all tasks", status: true, data: appBoard})
     } catch (error) {
         res.status(422).send("Something went wrong, check logs")
     }
@@ -176,8 +179,7 @@ exports.deleteTask = async(req,res)=>{
 }
 
 
-
-exports.updateSubTaskToCompleted = async(req,res)=>{
+exports.updateSubTaskStatus = async(req,res)=>{
     try {
         const {id} = req.params
     
@@ -190,6 +192,28 @@ exports.updateSubTaskToCompleted = async(req,res)=>{
         )
 
         
+    
+        return res.status(200).send({status:true, message:"Subtask status updated"})
+      
+
+    } catch (error) {
+        console.log(error)
+        res.status(422).send({message: "The id passed doesn't exist"})
+    }
+}
+
+exports.updateSubtask = async(req,res)=>{
+    try {
+        const {name} = req.body
+        const {id} = req.params
+        
+        const objectId = mongoose.Types.ObjectId(id);
+        const data = await TaskModel.update(
+            
+           { },
+           { $set: { "subtask.$[elem].name" : name} },
+           {multi: true,  arrayFilters: [ { "elem._id":  {$eq: objectId}  } ] }
+        )
     
         return res.status(200).send({status:true, message:"Subtask updated to completed"})
       
@@ -250,6 +274,6 @@ exports.getAllSubtasks = async(req,res)=>{
        return res.status(422).send({message: "The id passed doesn't exist"})
     }
 }
-
+ 
 
 
