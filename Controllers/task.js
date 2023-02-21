@@ -184,17 +184,36 @@ exports.updateSubTaskStatus = async(req,res)=>{
         const {id} = req.params
     
         const objectId = mongoose.Types.ObjectId(id);
-        const data = await TaskModel.update(
-            
-           { },
-           { $set: { "subtask.$[elem].isCompleted" : "true"} },
-           {multi: true,  arrayFilters: [ { "elem._id":  {$eq: objectId}  } ] }
-        )
-
-        
-    
-        return res.status(200).send({status:true, message:"Subtask status updated"})
       
+       console.log(id,"iddddddd")
+       const data = await TaskModel.find({
+        "subtask._id": { $eq : objectId}}, { 'subtask': 1})
+
+         const subtask = data[0].subtask
+       const  updatedData = subtask.filter((item)=>{
+        return String(item._id)  === String(objectId)
+       })
+
+       console.log( !(updatedData[0].isCompleted), "dataaaaa supported" )
+
+       if (updatedData[0].isCompleted === "false") {
+           console.log(false)
+          const data = await TaskModel.update(
+            
+            { },
+           { $set: { "subtask.$[elem].isCompleted" : "true"} },
+           {multi: true,  arrayFilters: [ { "elem._id":  {$eq: objectId}  } ] } )
+       }
+
+       if (updatedData[0].isCompleted === "true") {
+          const data = await TaskModel.update(
+            { },
+           { $set: { "subtask.$[elem].isCompleted" : "false"} },
+           {multi: true,  arrayFilters: [ { "elem._id":  {$eq: objectId}  } ] } )
+          console.log(true)
+       }
+       
+        return res.status(200).send({status:true, message:"Subtask status updated"})
 
     } catch (error) {
         console.log(error)
@@ -206,7 +225,7 @@ exports.updateSubtask = async(req,res)=>{
     try {
         const {name} = req.body
         const {id} = req.params
-        
+
         const objectId = mongoose.Types.ObjectId(id);
         const data = await TaskModel.update(
             
