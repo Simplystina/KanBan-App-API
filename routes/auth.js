@@ -1,14 +1,14 @@
 const express = require('express')
 const passport = require("passport")
 const jwt = require('jsonwebtoken')
-
+const validateRequest = require('../validation/user')
 require("dotenv").config()
 
 const authRouter = express.Router()
 
 
 authRouter.post(
-    '/signup',
+    '/signup', validateRequest,
     async(req,res,next)=>{
         passport.authenticate('signup',{session:false}, async(err, user)=>{
             try {

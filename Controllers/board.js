@@ -112,19 +112,26 @@ exports.AddCollaborator = async(req,res)=>{
         const data = await UserModel.find({"email":email})
         
         if(email === req.user.email){
-            res.status(400).json({message:"You can't add yourself as a collaborator to your own project"})
+           return res.status(400).json({message:"You can't add yourself as a collaborator to your own project"})
         }
         console.log(data,"dataaaaaaa")
         if(data.length === 0){
           return res.status(404).json({message:"The email address supplied isn't registered", status: true})
         }
-        const board = await BoardModel.findById(boardId)
-        board.updateOne(
+        //check if the email is already in the board
+        const boardData = await BoardModel.find({_id : boardId, collaborators:email})
+         if (boardData.length !== 0) {
+            return res.status(404).json({message:`${email} is already a collaborator on this board`})
+         }
+         
+        console.log(boardData,"check")
+
+        const board = await BoardModel.updateOne(
             { _id: boardId },
             { $push: { collaborators: email } }
          )
         
-      
+        console.log(board)
         return res.status(201).json({message:`You have successfully added ${email} as a collaborator`})
 
     } catch (error) {
