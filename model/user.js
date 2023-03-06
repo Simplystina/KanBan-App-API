@@ -10,7 +10,21 @@ const UserModel = new Schema(
         id: ObjectId,
         email: {type: String, unique: true, required: true},
         fullName: {type: String, required: true},
-        password: {type: String, required: true}
+        password: {type: String, required: true},
+        isVerified: {
+            type: Boolean,
+            default: false
+        },
+        
+        resetPasswordToken: {
+            type: String,
+            required: false
+        },
+    
+        resetPasswordExpires: {
+            type: Date,
+            required: false
+        }
     },
     {
         timestamps: true, toJSON: {virtuals: true}
@@ -35,6 +49,21 @@ UserModel.methods.isValidPassword = async function(password){
     
     return compare
 }
+
+UserModel.methods.generatePasswordReset = function() {
+    this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+};
+
+UserModel.methods.generateVerificationToken = function() {
+    let payload = {
+        userId: this._id,
+        token: crypto.randomBytes(20).toString('hex')
+    };
+
+    return new Token(payload);
+};
+
 
 const User = mongoose.model('users', UserModel)
 

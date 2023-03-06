@@ -40,6 +40,8 @@ app.get('/',(req,res)=>{
     res.status(200).send({status:true, message:"Home Route"})
 })
 
+
+
 app.use('*', (req, res) => {
     return res.status(404).json({ message: 'route not found' })
 })

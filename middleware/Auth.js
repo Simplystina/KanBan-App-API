@@ -3,6 +3,7 @@ const localStrategy = require("passport-local").Strategy
 const UserModel = require("../model/user")
 const JWTstrategy = require("passport-jwt").Strategy
 const ExtractJWT = require("passport-jwt").ExtractJwt
+const sendVerificationEmail = require("../utils/sendMail")
 
 passport.use(
     new JWTstrategy(
@@ -31,6 +32,7 @@ passport.use(
             try{
                 const user = await UserModel.create(req.body)
                 console.log(user,"userr")
+                await sendVerificationEmail(user, req, res);
                 return done(null, user)
             }catch(error){
                 return done(error, {message:"Email already exist"})
@@ -60,6 +62,8 @@ passport.use(
                 if(!validate){
                     return done(null, false, {message: 'Wrong password entered'})
                 }
+                 // Make sure the user has been verified
+               if (!user.isVerified) return res.status(401).json({ type: 'not-verified', message: 'Your account has not been verified.' });
 
                 return done(null, user, {message: 'logged in Successfully'})
             } catch (error) {
@@ -69,3 +73,4 @@ passport.use(
         }
     )
 )
+
