@@ -23,11 +23,11 @@ This repo contains the api collection for the popular Kanban task app.
 17. Only the creator of a board should be able to delete the board
 
 ## Setup
-Install NodeJS, mongodb
-pull this repo
-Open the folder on your local computer
-At the terminal, run `npm install` to install all packages
-run `npm run start:dev` or `nodemon` to start the server
+* Install NodeJS, mongodb
+* pull this repo
+* Open the folder on your local computer
+* At the terminal, run `npm install` to install all packages
+* run `npm run start:dev` or `nodemon` to start the server
 
 ## Base URL
 [https://kanban-task-api.cyclic.app/](https://kanban-task-api.cyclic.app/)
